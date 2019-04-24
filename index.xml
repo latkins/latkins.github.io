@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Liam Atkinson</title>
-    <link>https://latkins.github.io/</link>
+    <link>https://liamatkinson.com/</link>
     <description>Recent content on Liam Atkinson</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Wed, 24 Apr 2019 10:59:18 +0100</lastBuildDate>
     
-	<atom:link href="https://latkins.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://liamatkinson.com/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Notes on Attention</title>
-      <link>https://latkins.github.io/posts/attention-notes/</link>
+      <link>https://liamatkinson.com/posts/attention-notes/</link>
       <pubDate>Wed, 24 Apr 2019 10:59:18 +0100</pubDate>
       
-      <guid>https://latkins.github.io/posts/attention-notes/</guid>
+      <guid>https://liamatkinson.com/posts/attention-notes/</guid>
       <description>There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This is often known as self-attention, or intra-attention, due to it&amp;rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.
 The Problem Let&amp;rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience).</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>https://latkins.github.io/about/</link>
+      <link>https://liamatkinson.com/about/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://latkins.github.io/about/</guid>
+      <guid>https://liamatkinson.com/about/</guid>
       <description>More to come.</description>
     </item>
     
