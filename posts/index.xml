@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Liam Atkinson</title>
-    <link>https://latkins.github.io/</link>
-    <description>Recent content on Liam Atkinson</description>
+    <title>Posts on Liam Atkinson</title>
+    <link>https://latkins.github.io/posts/</link>
+    <description>Recent content in Posts on Liam Atkinson</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <lastBuildDate>Wed, 24 Apr 2019 10:59:18 +0100</lastBuildDate>
     
-	<atom:link href="https://latkins.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://latkins.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,15 +19,6 @@
       <guid>https://latkins.github.io/posts/attention-notes/</guid>
       <description>There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This is often known as self-attention, or intra-attention, due to it&amp;rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.
 The Problem Let&amp;rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience).</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://latkins.github.io/about/</link>
-      <pubDate>Mon, 31 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://latkins.github.io/about/</guid>
-      <description>More to come.</description>
     </item>
     
   </channel>
