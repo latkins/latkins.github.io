@@ -35,7 +35,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1640">
+<meta itemprop="wordCount" content="1639">
 
 
 
@@ -80,7 +80,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This post will only discuss attention, rather than the full transformer architecture.</p>
 
-<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by it&rsquo;s weight, and the result is the sum of these weighted vectors. The combination can &ldquo;pay more attention&rdquo; to vectors by assigning them a larger weight.</p>
+<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by it&rsquo;s weight, and the result is the sum of these weighted vectors. Thus, &ldquo;more attention&rdquo; can be paid to vectors by assigning them larger weights.</p>
 
 <h3 id="the-problem">The Problem</h3>
 
