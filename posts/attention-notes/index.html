@@ -35,7 +35,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1629">
+<meta itemprop="wordCount" content="1630">
 
 
 
@@ -125,7 +125,7 @@ def attn(Q, K, V):
 
 <h5 id="what-does-this-mean">What does this mean?</h5>
 
-<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d<em>k}\)), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z</em>{i}\), will give more weight in the sum to the embeddings, \(x_{j}\) that were similar to its own.</p>
+<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\) ), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z_{i}\), will give more weight in the sum to the embeddings, \(x_{j}\) that were similar to its own.</p>
 
 <h4 id="multi-headed-attention">Multi-Headed Attention</h4>
 
