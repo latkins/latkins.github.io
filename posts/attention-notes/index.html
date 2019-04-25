@@ -20,8 +20,8 @@
 
 
 <meta property="og:title" content="Notes on Attention" />
-<meta property="og:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This is often known as self-attention, or intra-attention, due to it&rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.
-The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience)." />
+<meta property="og:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
+Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://liamatkinson.com/posts/attention-notes/" /><meta property="article:published_time" content="2019-04-24T10:59:18&#43;01:00"/>
 <meta property="article:modified_time" content="2019-04-24T10:59:18&#43;01:00"/>
@@ -29,13 +29,13 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
 
 
 <meta itemprop="name" content="Notes on Attention">
-<meta itemprop="description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This is often known as self-attention, or intra-attention, due to it&rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.
-The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience).">
+<meta itemprop="description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
+Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector.">
 
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1244">
+<meta itemprop="wordCount" content="1306">
 
 
 
@@ -43,8 +43,8 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Notes on Attention"/>
-<meta name="twitter:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This is often known as self-attention, or intra-attention, due to it&rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.
-The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience)."/>
+<meta name="twitter:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
+Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector."/>
 <meta name="twitter:site" content="@https://www.twitter.com/latkins_"/>
 
 
@@ -78,7 +78,9 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
     <section id="post-body">
         
 
-<p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This is often known as self-attention, or intra-attention, due to it&rsquo;s use as a mechanism for summarising sequences of vector values. This post will only discuss attention, rather than the full transformer architecture.</p>
+<p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This post will only discuss attention, rather than the full transformer architecture.</p>
+
+<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by it&rsquo;s weight, and the result is the sum of these weighted vectors. The combination can &ldquo;pay more attention&rdquo; to vectors by assigning them a larger weight.</p>
 
 <h3 id="the-problem">The Problem</h3>
 
@@ -90,9 +92,7 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
 
 <h4 id="self-attention">Self Attention</h4>
 
-<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples).</p>
-
-<p>Self-attention is actually more general than summarising a single sequence like the one presented above. Lets first look at this more general form, and then related it to a sequence of word embeddings.</p>
+<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples). Somewhat confusingly attention was originally applied <a href="https://arxiv.org/abs/1409.0473">in conjunction with RNNs</a>, with &ldquo;Attention Is All You Need&rdquo; being the first paper (as far as I&rsquo;m aware) to exclusively use attention.</p>
 
 <p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{k}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n)\). Each output \(z_i\) is effectively the weighted sum of all \(n\) values, where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
 
