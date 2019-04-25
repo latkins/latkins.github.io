@@ -35,7 +35,7 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1218">
+<meta itemprop="wordCount" content="1237">
 
 
 
@@ -86,13 +86,13 @@ The Problem Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldo
 
 <h4 id="recurrent-neural-networks">Recurrent Neural Networks</h4>
 
-<p>The traditional way of combining sequential vectors is to use a Recurrent Neural Networks (assuming you are using neural networks, and something as recent as RNNs can be considered traditional). These are sequential models, and their use makes some intuitive sense &ndash; humans read and understand text sequentially. They also have the nice property of being able to deal with sequences of variable length, which is important when dealing with natural language. However, their sequential nature also presents some problems. Most obviously, the computation time grows linearly with the length of the sequence. The sequential nature also directly leads to problems like vanishing/exploding gradients when training with <a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">backpropagation through time</a>.</p>
+<p>The traditional way of combining sequential vectors is to use a Recurrent Neural Network (assuming you are using neural networks, and something as recent as RNNs can be considered traditional). These are sequential models, and their use makes some intuitive sense &ndash; humans read and understand text sequentially. They also have the nice property of being able to deal with sequences of variable length, which is important when dealing with natural language. However, their sequential nature also presents some problems. Most obviously, the computation time grows linearly with the length of the sequence. The sequential nature also directly leads to problems like vanishing/exploding gradients when training with <a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">backpropagation through time</a>.</p>
 
 <h4 id="self-attention">Self Attention</h4>
 
-<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites Extended Neural GPU, ByteNet and ConvS2S as examples).</p>
+<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples).</p>
 
-<p>Self-attention is actually more general than just summarising a single sequence like the one presented above. Lets first look at this more general form, and then related it to a sequence of word embeddings.</p>
+<p>Self-attention is actually more general than summarising a single sequence like the one presented above. Lets first look at this more general form, and then related it to a sequence of word embeddings.</p>
 
 <p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{k}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n)\). Each output \(z_i\) is effectively the weighted sum of all \(n\) values, where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
 
@@ -125,7 +125,7 @@ def attn(Q, K, V):
 
 <h5 id="what-does-this-mean">What does this mean?</h5>
 
-<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\)), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings.</p>
+<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\)), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, the &ldquo;new&rdquo; vector for a word will give more weight to the embeddings that were similar to its own.</p>
 
 <h3 id="multi-headed-attention">Multi-Headed Attention</h3>
 
