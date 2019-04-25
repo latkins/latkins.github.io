@@ -35,7 +35,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1630">
+<meta itemprop="wordCount" content="1640">
 
 
 
@@ -236,7 +236,7 @@ def attn(Q, K, V):
     return a.matmul(V)
 </code></pre>
 
-<p>This implementation allows more operations to be parallelised, though is a bit more fiddly in terms of keeping track of dimensions.</p>
+<p>This implementation allows more operations to be parallelised, though is a bit more fiddly in terms of keeping track of dimensions. This is a simplified version of the implementation found <a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">here</a>.</p>
 
 <h3 id="notes">Notes</h3>
 
