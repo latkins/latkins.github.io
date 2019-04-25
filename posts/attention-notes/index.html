@@ -35,7 +35,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1306">
+<meta itemprop="wordCount" content="1629">
 
 
 
@@ -127,7 +127,7 @@ def attn(Q, K, V):
 
 <p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d<em>k}\)), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z</em>{i}\), will give more weight in the sum to the embeddings, \(x_{j}\) that were similar to its own.</p>
 
-<h3 id="multi-headed-attention">Multi-Headed Attention</h3>
+<h4 id="multi-headed-attention">Multi-Headed Attention</h4>
 
 <p>The paper notes that &ldquo;additive attention&rdquo; performs better than the self attention described above, though it is much slower. Additive attention uses a more complicated compatibility function &ndash; namely a feed forward neural network. Naturally, this is slower than a highly optimized dot-product. Also naturally, it is more expressive. A single dot product can only give us the &ldquo;overall&rdquo; similarity between two vectors, while a feed forward layer can consider combinations of different subspaces.</p>
 
@@ -151,13 +151,13 @@ W^O &amp;\in \mathbb{R}^{ h d_\text{v} \times d_\text{model} }
 
 <p>A naive PyTorch implementation looks like this:</p>
 
-<pre><code>
+<pre><code class="language-python">import math
 import torch
 import torch.nn.functional as F
 from torch import nn
 
 
-class MultiheadNaive(nn.Module):
+class MultiHeadNaive(nn.Module):
     def __init__(self, d_model, d_k, d_v, h):
         super().__init__()
 
@@ -182,14 +182,67 @@ class AttnHead(nn.Module):
 
 
 def attn(Q, K, V):
-    a = F.softmax((Q @ K.t()) / Q.shape[-1], dim=-1)
+    a = F.softmax((Q @ K.t()) / math.sqrt(Q.shape[-1]), dim=-1)
     return a @ V
-
 </code></pre>
 
-<p>Most implementations are slightly more complicated for reasons of computational efficiency.</p>
+<p>Most implementations are slightly more complicated for reasons of computational efficiency. It is possible to perform all of the \(W^{*}_{i}\) multiplications at one, by choosing a larger matrix:</p>
 
-<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;.</p>
+<pre><code class="language-python">import math
+
+import torch
+import torch.nn.functional as F
+from torch import nn
+
+
+class MultiHead(nn.Module):
+    def __init__(self, h, d_model):
+        super().__init__()
+
+        assert d_model % h == 0, f&quot;d_model, {d_model} not divisible by number of heads, {h}&quot;
+        self.d_model = d_model
+        self.d_k = d_model // h
+        self.h = h
+
+        # These W^{*} linear layers contain _all_ W^{*}_{i} matices for each head.
+        self.WQ = nn.Linear(d_model, d_model)
+        self.WK = nn.Linear(d_model, d_model)
+        self.WV = nn.Linear(d_model, d_model)
+        self.WO = nn.Linear(d_model, d_model)
+
+    def forward(self, Q, K, V):
+        bs = Q.shape[0]
+
+        n = Q.shape[1]
+
+        # (bs x n x d_model) -&gt; (bs x n x h x d_k) -&gt; (bs x h x n x d_k)
+        Qs = self.WQ(Q).view(bs, -1, self.h, self.d_k).transpose(1, 2)
+        Ks = self.WK(K).view(bs, -1, self.h, self.d_k).transpose(1, 2)
+        Vs = self.WV(V).view(bs, -1, self.h, self.d_k).transpose(1, 2)
+
+        batched_attn = attn(Qs, Ks, Vs)
+
+        # (bs x h x n x d_k) -&gt; (bs x n x h x d_k) -&gt; (bs x n x d_model)
+        concatted_attn = batched_attn.transpose(1, 2).contiguous().view(bs, -1, self.d_model)
+
+        return self.WO(concatted_attn)
+
+
+def attn(Q, K, V):
+    # Q.matmul(K.transpose(-2, -1): (bs x h x n x d_k) x (bs x h x d_k x n) -&gt; (bs x h x n x n)
+    a = F.softmax((Q.matmul(K.transpose(-2, -1))) / math.sqrt(Q.shape[-1]), dim=-1)
+
+    # a.matmul(V): (bs x h x n x n) x (bs x h x n x d_k) -&gt; (bs x h x n x d_k)
+    return a.matmul(V)
+</code></pre>
+
+<p>This implementation allows more operations to be parallelised, though is a bit more fiddly in terms of keeping track of dimensions.</p>
+
+<h3 id="notes">Notes</h3>
+
+<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;.  It is also worth point out that attention alone doesn&rsquo;t contain a non-linearity.</p>
+
+<p>An interesting way to think about attention is as an \(n \times n\) matrix. This could be interpreted as describing weighted edges in a graph, where each node is a token. Each attention head learns how to construct this graph for different inputs.</p>
 
     </section>
 </article>
