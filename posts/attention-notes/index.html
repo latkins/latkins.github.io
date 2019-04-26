@@ -35,7 +35,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1637">
+<meta itemprop="wordCount" content="1761">
 
 
 
@@ -80,7 +80,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This post will only discuss attention, rather than the full transformer architecture.</p>
 
-<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by it&rsquo;s weight, and the result is the sum of these weighted vectors. Thus, &ldquo;more attention&rdquo; can be paid to vectors by assigning them larger weights.</p>
+<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by its weight, and the result is the sum of these weighted vectors. Thus, &ldquo;more attention&rdquo; can be paid to vectors by assigning them larger weights.</p>
 
 <h3 id="the-problem">The Problem</h3>
 
@@ -94,7 +94,7 @@ Attention, as used in transformer models, is often known as self-attention, or i
 
 <p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples). Somewhat confusingly attention was originally applied <a href="https://arxiv.org/abs/1409.0473">in conjunction with RNNs</a>, with &ldquo;Attention Is All You Need&rdquo; being the first paper (as far as I&rsquo;m aware) to exclusively use attention.</p>
 
-<p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{k}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n)\). Each output \(z_i\) is effectively a weighted sum of \(\textbf{v}\), where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
+<p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{v}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n), z_i \in \mathbb{R}^{d_\text{v}}\). Each output \(z_i\) is effectively a weighted sum of \(\textbf{v}\), where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
 
 <p>\[\begin{align}
 \textbf{c} &amp;= \left(\frac{q_j \cdot k_1}{\sqrt{d_k}}, \frac{q_j \cdot k_2}{\sqrt{d_k}}, \ldots, \frac{q_j \cdot k_n}{\sqrt{d_k}}\right)\\<br />
@@ -125,7 +125,14 @@ def attn(Q, K, V):
 
 <h5 id="what-does-this-mean">What does this mean?</h5>
 
-<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\) ), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z_{i}\), will give more weight in the sum to the embeddings, \(x_{j}\), that were similar to its own.</p>
+<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\) ), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z_{i}\), will give more weight in the sum to the embeddings, \(x_{j}\), that were similar to its own. To make this a bit more explicit, let&rsquo;s imagine our embeddings \(\textbf{x}\) correspond to the sentence &ldquo;the man walked the dog&rdquo;. We want to compute a new vector the first word, &ldquo;the&rdquo;. To do so, we compute the similarity between &ldquo;the&rdquo;&rsquo;s embedding vector, and the embedding vectors for &ldquo;the&rdquo;, &ldquo;man&rdquo;, &ldquo;walked&rdquo;, &ldquo;the&rdquo;, &ldquo;dog&rdquo;. These similarities are normalised so they sum to \(1\) (and the two &ldquo;the&rdquo; tokens will contribute the maximum similarity score, \(\frac{1}{\sqrt{d_k}}\) ). The new vector is therefore:</p>
+
+<p>\[\begin{align}
+z_{\text{the}} &amp;= \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;the&rdquo;}) \times \text{embedding}(\text{&ldquo;the&rdquo;}) \\<br />
+&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;man&rdquo;}) \times \text{embedding}(\text{&ldquo;man&rdquo;}) \\<br />
+&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;walked&rdquo;}) \times \text{embedding}(\text{&ldquo;walked&rdquo;}) \\<br />
+&amp;+ \ldots
+\end{align}\]</p>
 
 <h4 id="multi-headed-attention">Multi-Headed Attention</h4>
 
@@ -240,7 +247,7 @@ def attn(Q, K, V):
 
 <h3 id="notes">Notes</h3>
 
-<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;.  It is also worth point out that attention alone doesn&rsquo;t contain a non-linearity.</p>
+<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;. It is also worth point out that attention alone doesn&rsquo;t contain a non-linearity (though the \(\text{softmax}\) used to compute attention weights is non-linear, the weighted sum itself is a linear combination).</p>
 
 <p>An interesting way to think about attention is as an \(n \times n\) matrix. This could be interpreted as describing weighted edges in a graph, where each node is a token. Each attention head learns how to construct this graph for different inputs.</p>
 
