@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Liam Atkinson</title>
     <link>https://liamatkinson.com/</link>
     <description>Recent content on Liam Atkinson</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-gb</language>
-    <lastBuildDate>Wed, 24 Apr 2019 10:59:18 +0100</lastBuildDate>
-    
-	<atom:link href="https://liamatkinson.com/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Wed, 24 Apr 2019 10:59:18 +0100</lastBuildDate><atom:link href="https://liamatkinson.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Notes on Attention</title>
       <link>https://liamatkinson.com/posts/attention-notes/</link>
@@ -27,7 +24,8 @@ Attention, as used in transformer models, is often known as self-attention, or i
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://liamatkinson.com/about/</guid>
-      <description>More to come.</description>
+      <description>I&amp;rsquo;m interested in new products enabled by Machine Learning, and new insights from Bioinformatics.
+Consulting I am open to consulting engagements relating to all aspects of practical Machine Learning systems. If you are interested in having an informal chat about a project in this area, please feel free to get in touch.</description>
     </item>
     
   </channel>

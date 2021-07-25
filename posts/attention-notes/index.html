@@ -1,367 +1,371 @@
 <!DOCTYPE html>
-<html lang="en-gb">
-	<head>
-    <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="author" content="Liam Atkinson">
-<meta name="description" content="Thoughts and notes">
-<meta name="generator" content="Hugo 0.53" />
-<title>Notes on Attention</title>
-<link rel="shortcut icon" href="https://liamatkinson.com/images/favicon.ico">
-<link rel="stylesheet" href="https://liamatkinson.com/css/style.css">
-<link rel="stylesheet" href="https://liamatkinson.com/css/highlight.css">
-
-
-
-<link rel="stylesheet" href="https://liamatkinson.com/css/monosocialiconsfont.css">
-
-
-
-
-<meta property="og:title" content="Notes on Attention" />
-<meta property="og:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
 Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://liamatkinson.com/posts/attention-notes/" /><meta property="article:published_time" content="2019-04-24T10:59:18&#43;01:00"/>
-<meta property="article:modified_time" content="2019-04-24T10:59:18&#43;01:00"/>
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://liamatkinson.com/posts/attention-notes/" />
+
+
+    <title>
+        
+            Notes on Attention :: Liam Atkinson  — Thoughts on Machine Learning
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.4d1cb919b6e63b1e9669424dd5832dffa1975fafd65be42370af247df64b18d5.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    
+
+
+
 
 
 
 <meta itemprop="name" content="Notes on Attention">
 <meta itemprop="description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
-Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector.">
-
-
-<meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
+Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector."><meta itemprop="datePublished" content="2019-04-24T10:59:18&#43;01:00" />
 <meta itemprop="dateModified" content="2019-04-24T10:59:18&#43;01:00" />
-<meta itemprop="wordCount" content="1761">
-
-
-
+<meta itemprop="wordCount" content="1761"><meta itemprop="image" content="https://liamatkinson.com/"/>
 <meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://liamatkinson.com/"/>
 
-<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Notes on Attention"/>
 <meta name="twitter:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
 Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector."/>
-<meta name="twitter:site" content="@https://www.twitter.com/latkins_"/>
+
+
+
+
+    <meta property="og:title" content="Notes on Attention" />
+<meta property="og:description" content="There are a few versions of attention that have been proposed, but this post will consider the version discussed in Attention Is All You Need, and the subsequent transformer papers (e.g. BERT, GPT, GPT2, etc). This post will only discuss attention, rather than the full transformer architecture.
+Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://liamatkinson.com/posts/attention-notes/" /><meta property="og:image" content="https://liamatkinson.com/"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-04-24T10:59:18&#43;01:00" />
+<meta property="article:modified_time" content="2019-04-24T10:59:18&#43;01:00" /><meta property="og:site_name" content="Liam Atkinson" />
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2019-04-24 10:59:18 &#43;0100 &#43;0100" />
+
+
+
+
+
+
 
 
     </head>
-<body>
-    <nav class="main-nav">
-	
-		<a href='https://liamatkinson.com/'> <span class="arrow">←</span>Home</a>
-	
 
-	
- 		<a href='/about/'>About</a>
-  	
-
-	
-</nav>
-
-    <section id="wrapper">
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        Home
         
+            
+            
+            
+                  
+                   
+                   
+            
         
-<article class="post">
-    <header>
-        <h1>Notes on Attention</h1>
-        <h2 class="subtitle"></h2>
-        <h2 class="headline">
-        April 24, 2019
-        <br>
-        
-        </h2>
-    </header>
-    <section id="post-body">
-        
-
-<p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This post will only discuss attention, rather than the full transformer architecture.</p>
-
-<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by its weight, and the result is the sum of these weighted vectors. Thus, &ldquo;more attention&rdquo; can be paid to vectors by assigning them larger weights.</p>
-
-<h3 id="the-problem">The Problem</h3>
-
-<p>Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience). We can map these tokens to a sequence \(\textbf{x} = (x_1, x_2, \ldots, x_n)\) of continuous valued <a href="https://en.wikipedia.org/wiki/Word_embedding">embedding vectors</a> &ndash; each of our \(n\) words have an embedding vector. Many tasks in language processing require us to combine these vectors in some way. We may want to predict word level properties, like whether a token corresponds to a <a href="https://en.wikipedia.org/wiki/Named-entity_recognition">named entity</a>. We may want to predict sequence level properties, like the positive/negative <a href="https://en.wikipedia.org/wiki/Sentiment_analysis">sentiment</a> of some text. We might want to produce a summary vector, for use in an auto-regressive <a href="https://en.wikipedia.org/wiki/Language_model">language model</a>, or for the generation of a <a href="https://en.wikipedia.org/wiki/Automatic_summarization">summary</a> of the text. All of these applications (and many more) require us to combine a sequence of word embeddings somehow &ndash; if we didn&rsquo;t, any down stream task would only &ldquo;know&rdquo; about individual words. Attention is one way of performing this combination.</p>
-
-<h4 id="recurrent-neural-networks">Recurrent Neural Networks</h4>
-
-<p>The traditional way of combining sequential vectors is to use a Recurrent Neural Network (assuming you are using neural networks, and something as recent as RNNs can be considered traditional). These are sequential models, and their use makes some intuitive sense &ndash; humans read and understand text sequentially. They also have the nice property of being able to deal with sequences of variable length, which is important when dealing with natural language. However, their sequential nature also presents some problems. Most obviously, the computation time grows linearly with the length of the sequence. The sequential nature also directly leads to problems like vanishing/exploding gradients when training with <a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">backpropagation through time</a>.</p>
-
-<h4 id="self-attention">Self Attention</h4>
-
-<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples). Somewhat confusingly attention was originally applied <a href="https://arxiv.org/abs/1409.0473">in conjunction with RNNs</a>, with &ldquo;Attention Is All You Need&rdquo; being the first paper (as far as I&rsquo;m aware) to exclusively use attention.</p>
-
-<p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{v}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n), z_i \in \mathbb{R}^{d_\text{v}}\). Each output \(z_i\) is effectively a weighted sum of \(\textbf{v}\), where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
-
-<p>\[\begin{align}
-\textbf{c} &amp;= \left(\frac{q_j \cdot k_1}{\sqrt{d_k}}, \frac{q_j \cdot k_2}{\sqrt{d_k}}, \ldots, \frac{q_j \cdot k_n}{\sqrt{d_k}}\right)\\<br />
-\text{softmax}(\textbf{c})_i &amp;= \frac{e^{c_i}}{\sum_{j = 1}^n e^{c_j}}\\<br />
-\textbf{a} &amp;= \left(\text{softmax}(\textbf{c})_1, \text{softmax}(\textbf{c})_2, \ldots, \text{softmax}(\textbf{c})_n \right)\\<br />
-\textbf{z}_j &amp;= \sum_{i=1}^{n} a_i \textbf{v}_i
-\end{align}\]</p>
-
-<p>To make the calculation simpler, we can create three input matrices by stacking our vector inputs:</p>
-
-<p>\[\begin{align}
-Q &amp;\in \mathbb{R}^{n \times d_\text{k}} \\<br />
-K &amp;\in \mathbb{R}^{n \times d_\text{k}} \\<br />
-V &amp;\in \mathbb{R}^{n \times d_\text{v}}
-\end{align}\]</p>
-
-<p>This allows us to write the basic equation of attention as:
-\[\text{Attention}(K, Q, V) = \text{softmax} \left( \frac{Q K^T}{\sqrt{d_k}}  \right) V \]</p>
-
-<p>Or, in PyTorch, as:</p>
-
-<pre><code class="language-python">import torch.nn.functional as F
-
-def attn(Q, K, V):
-    a = F.softmax((Q @ K.t()) / Q.shape[-1], dim=-1)
-    return a @ V
-</code></pre>
-
-<h5 id="what-does-this-mean">What does this mean?</h5>
-
-<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\) ), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z_{i}\), will give more weight in the sum to the embeddings, \(x_{j}\), that were similar to its own. To make this a bit more explicit, let&rsquo;s imagine our embeddings \(\textbf{x}\) correspond to the sentence &ldquo;the man walked the dog&rdquo;. We want to compute a new vector the first word, &ldquo;the&rdquo;. To do so, we compute the similarity between &ldquo;the&rdquo;&rsquo;s embedding vector, and the embedding vectors for &ldquo;the&rdquo;, &ldquo;man&rdquo;, &ldquo;walked&rdquo;, &ldquo;the&rdquo;, &ldquo;dog&rdquo;. These similarities are normalised so they sum to \(1\) (and the two &ldquo;the&rdquo; tokens will contribute the maximum similarity score, \(\frac{1}{\sqrt{d_k}}\) ). The new vector is therefore:</p>
-
-<p>\[\begin{align}
-z_{\text{the}} &amp;= \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;the&rdquo;}) \times \text{embedding}(\text{&ldquo;the&rdquo;}) \\<br />
-&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;man&rdquo;}) \times \text{embedding}(\text{&ldquo;man&rdquo;}) \\<br />
-&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;walked&rdquo;}) \times \text{embedding}(\text{&ldquo;walked&rdquo;}) \\<br />
-&amp;+ \ldots
-\end{align}\]</p>
-
-<h4 id="multi-headed-attention">Multi-Headed Attention</h4>
-
-<p>The paper notes that &ldquo;additive attention&rdquo; performs better than the self attention described above, though it is much slower. Additive attention uses a more complicated compatibility function &ndash; namely a feed forward neural network. Naturally, this is slower than a highly optimized dot-product. Also naturally, it is more expressive. A single dot product can only give us the &ldquo;overall&rdquo; similarity between two vectors, while a feed forward layer can consider combinations of different subspaces.</p>
-
-<p>As a solution, multiple attention &ldquo;heads&rdquo; are used in parallel, each of which can focus on a different subspace. We parameterise the number of heads with \(h\).</p>
-
-<p>\[\begin{align}
-\text{Multihead}(Q, K, V) &amp;= \left( \overset{h}{\underset{i = 0}{\parallel}} \text{head}_i \right) W^{O} \\<br />
-\text{head}_i &amp;= \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)
-\end{align}\]</p>
-
-<p>Where \(\parallel\) indicates the concatenation of vectors. Note that \(Q, K, V\) differ from the single headed version, and all are in \( \mathbb{R}^{n \times d_{\text{model}}}\).</p>
-
-<p>Compared to the version of attention discussed in previously, each attention head has three additional matrices, used to learn a linear projection of each of \(Q, K,\) and \(V\). Additionally, \(W^{O}\) is used to project the concatenated output of all heads into \(d_\text{model}\).</p>
-
-<p>\[\begin{align}
-W_{i}^Q &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{k}} \\<br />
-W_{i}^K &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{k}} \\<br />
-W_{i}^V &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{v}} \\<br />
-W^O &amp;\in \mathbb{R}^{ h d_\text{v} \times d_\text{model} }
-\end{align}\]</p>
-
-<p>A naive PyTorch implementation looks like this:</p>
-
-<pre><code class="language-python">import math
-import torch
-import torch.nn.functional as F
-from torch import nn
-
-
-class MultiHeadNaive(nn.Module):
-    def __init__(self, d_model, d_k, d_v, h):
-        super().__init__()
-
-        self.heads = nn.ModuleList([AttnHead(d_model, d_k, d_v) for _ in range(h)])
-        self.Wo = nn.Linear(h * d_v, d_model)
-
-    def forward(self, Q, K, V):
-        head_results = [head(Q, K, V) for head in self.heads]
-        return self.Wo(torch.cat(head_results, dim=-1))
-
-
-class AttnHead(nn.Module):
-    def __init__(self, d_model, d_k, d_v):
-        super().__init__()
-
-        self.Wq = nn.Linear(d_model, d_k)
-        self.Wk = nn.Linear(d_model, d_k)
-        self.Wv = nn.Linear(d_model, d_v)
-
-    def forward(self, Q, K, V):
-        return attn(self.Wq(Q), self.Wk(K), self.Wv(V))
-
-
-def attn(Q, K, V):
-    a = F.softmax((Q @ K.t()) / math.sqrt(Q.shape[-1]), dim=-1)
-    return a @ V
-</code></pre>
-
-<p>Most implementations are slightly more complicated for reasons of computational efficiency. It is possible to perform all of the \(W^{*}_{i}\) multiplications at one, by choosing a larger matrix:</p>
-
-<pre><code class="language-python">import math
-
-import torch
-import torch.nn.functional as F
-from torch import nn
-
-
-class MultiHead(nn.Module):
-    def __init__(self, h, d_model):
-        super().__init__()
-
-        assert d_model % h == 0, f&quot;d_model, {d_model} not divisible by number of heads, {h}&quot;
-        self.d_model = d_model
-        self.d_k = d_model // h
-        self.h = h
-
-        # These W^{*} linear layers contain _all_ W^{*}_{i} matices for each head.
-        self.WQ = nn.Linear(d_model, d_model)
-        self.WK = nn.Linear(d_model, d_model)
-        self.WV = nn.Linear(d_model, d_model)
-        self.WO = nn.Linear(d_model, d_model)
-
-    def forward(self, Q, K, V):
-        bs = Q.shape[0]
-
-        n = Q.shape[1]
-
-        # (bs x n x d_model) -&gt; (bs x n x h x d_k) -&gt; (bs x h x n x d_k)
-        Qs = self.WQ(Q).view(bs, -1, self.h, self.d_k).transpose(1, 2)
-        Ks = self.WK(K).view(bs, -1, self.h, self.d_k).transpose(1, 2)
-        Vs = self.WV(V).view(bs, -1, self.h, self.d_k).transpose(1, 2)
-
-        batched_attn = attn(Qs, Ks, Vs)
-
-        # (bs x h x n x d_k) -&gt; (bs x n x h x d_k) -&gt; (bs x n x d_model)
-        concatted_attn = batched_attn.transpose(1, 2).contiguous().view(bs, -1, self.d_model)
-
-        return self.WO(concatted_attn)
-
-
-def attn(Q, K, V):
-    # Q.matmul(K.transpose(-2, -1): (bs x h x n x d_k) x (bs x h x d_k x n) -&gt; (bs x h x n x n)
-    a = F.softmax((Q.matmul(K.transpose(-2, -1))) / math.sqrt(Q.shape[-1]), dim=-1)
-
-    # a.matmul(V): (bs x h x n x n) x (bs x h x n x d_k) -&gt; (bs x h x n x d_k)
-    return a.matmul(V)
-</code></pre>
-
-<p>This implementation allows more operations to be parallelised, though is a bit more fiddly in terms of keeping track of dimensions. This is a simplified version of the implementation found <a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">here</a>.</p>
-
-<h3 id="notes">Notes</h3>
-
-<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;. It is also worth point out that attention alone doesn&rsquo;t contain a non-linearity (though the \(\text{softmax}\) used to compute attention weights is non-linear, the weighted sum itself is a linear combination).</p>
-
-<p>An interesting way to think about attention is as an \(n \times n\) matrix. This could be interpreted as describing weighted edges in a graph, where each node is a token. Each attention head learns how to construct this graph for different inputs.</p>
-
-    </section>
-</article>
-
-<footer id="post-meta" class="clearfix">
-    <a href="https://twitter.com/latkins_">
-    <img class="avatar" src="https://liamatkinson.com/images/avatar.png">
-    <div>
-        <span class="dark">Liam Atkinson</span>
-        <span></span>
     </div>
-    </a>
-    <section id="sharing">
-        <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fliamatkinson.com%2fposts%2fattention-notes%2f - Notes%20on%20Attention by @latkins_"><span class="icon-twitter"> tweet</span></a>
-
-<a class="facebook" href="#" onclick="
-    window.open(
-      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
-      'facebook-share-dialog',
-      'width=626,height=436');
-    return false;"><span class="icon-facebook-rect"> Share</span>
 </a>
 
-    </section>
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        9 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://liamatkinson.com/posts/attention-notes/">Notes on Attention</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <p>There are a few versions of attention that have been proposed, but this post will consider the version discussed in <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, and the subsequent transformer papers (e.g. <a href="https://arxiv.org/abs/1810.04805">BERT</a>, <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">GPT</a>, <a href="https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT2</a>, etc). This post will only discuss attention, rather than the full transformer architecture.</p>
+<p>Attention, as used in transformer models, is often known as self-attention, or intra-attention, and is used to combine a sequence of vectors into a single vector. It is called &ldquo;attention&rdquo; due to the mechanism used in this combination &ndash; a weight is calculated for each vector in the sequence, such that all weights sum to \(1\). Each vector is scaled by its weight, and the result is the sum of these weighted vectors. Thus, &ldquo;more attention&rdquo; can be paid to vectors by assigning them larger weights.</p>
+<h3 id="the-problem">The Problem</h3>
+<p>Let&rsquo;s assume we have a sequence \(\textbf{w} = (w_1, w_2, \ldots, w_n)\) of tokens (which we can think of as words, for convenience). We can map these tokens to a sequence \(\textbf{x} = (x_1, x_2, \ldots, x_n)\) of continuous valued <a href="https://en.wikipedia.org/wiki/Word_embedding">embedding vectors</a> &ndash; each of our \(n\) words have an embedding vector. Many tasks in language processing require us to combine these vectors in some way. We may want to predict word level properties, like whether a token corresponds to a <a href="https://en.wikipedia.org/wiki/Named-entity_recognition">named entity</a>. We may want to predict sequence level properties, like the positive/negative <a href="https://en.wikipedia.org/wiki/Sentiment_analysis">sentiment</a> of some text. We might want to produce a summary vector, for use in an auto-regressive <a href="https://en.wikipedia.org/wiki/Language_model">language model</a>, or for the generation of a <a href="https://en.wikipedia.org/wiki/Automatic_summarization">summary</a> of the text. All of these applications (and many more) require us to combine a sequence of word embeddings somehow &ndash; if we didn&rsquo;t, any down stream task would only &ldquo;know&rdquo; about individual words. Attention is one way of performing this combination.</p>
+<h4 id="recurrent-neural-networks">Recurrent Neural Networks</h4>
+<p>The traditional way of combining sequential vectors is to use a Recurrent Neural Network (assuming you are using neural networks, and something as recent as RNNs can be considered traditional). These are sequential models, and their use makes some intuitive sense &ndash; humans read and understand text sequentially. They also have the nice property of being able to deal with sequences of variable length, which is important when dealing with natural language. However, their sequential nature also presents some problems. Most obviously, the computation time grows linearly with the length of the sequence. The sequential nature also directly leads to problems like vanishing/exploding gradients when training with <a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">backpropagation through time</a>.</p>
+<h4 id="self-attention">Self Attention</h4>
+<p>Attention is a method for combining vectors that solves some of the problems that RNNs suffer from (e.g. slowness due to their sequential nature), while retaining good performance on tasks in NLP, and allowing for variable length sequences. (It should be noted that a number of methods have been proposed to reduce sequential operations in these sequential tasks &ndash; the paper cites <a href="https://arxiv.org/pdf/1610.08613.pdf">Extended Neural GPU</a>, <a href="https://arxiv.org/abs/1610.10099">ByteNet</a> and <a href="https://arxiv.org/pdf/1705.03122.pdf">ConvS2S</a> as examples). Somewhat confusingly attention was originally applied <a href="https://arxiv.org/abs/1409.0473">in conjunction with RNNs</a>, with &ldquo;Attention Is All You Need&rdquo; being the first paper (as far as I&rsquo;m aware) to exclusively use attention.</p>
+<p>Attention maps a sequence of continuous query \(\textbf{q} = (q_1, q_2, \ldots, q_n), q_i \in \mathbb{R}^{d_\text{k}}\), key \(\textbf{k} = (k_1, k_2, \ldots, k_n), k_i \in \mathbb{R}^{d_\text{k}}\), and value vectors \(\textbf{v} = (v_1, v_2, \ldots, v_n), v_i \in \mathbb{R}^{d_\text{v}}\), to a sequence of continuous output vectors \(\textbf{z} = (z_1, z_2, \ldots, z_n), z_i \in \mathbb{R}^{d_\text{v}}\). Each output \(z_i\) is effectively a weighted sum of \(\textbf{v}\), where the weight is computed by a compatibility function applied between \(q_i\) and each \(k_j\). The specific compatibility function used in the transformer model is &ldquo;scaled dot product attention&rdquo;. This takes the dot product between any query-key pair, and scales the result by the square root of the dimension of their vectors, giving a continuous valued output between \(-1\) and \(1\). These values are normalised with a \(\text{softmax}\), and the result treated as weights in a weighted sum. For a single output, \(z_j\), this looks like:</p>
+<p>\[\begin{align}
+\textbf{c} &amp;= \left(\frac{q_j \cdot k_1}{\sqrt{d_k}}, \frac{q_j \cdot k_2}{\sqrt{d_k}}, \ldots, \frac{q_j \cdot k_n}{\sqrt{d_k}}\right)\\\<br>
+\text{softmax}(\textbf{c})_i &amp;= \frac{e^{c_i}}{\sum_{j = 1}^n e^{c_j}}\\\<br>
+\textbf{a} &amp;= \left(\text{softmax}(\textbf{c})_1, \text{softmax}(\textbf{c})_2, \ldots, \text{softmax}(\textbf{c})_n \right)\\\<br>
+\textbf{z}_j &amp;= \sum_{i=1}^{n} a_i \textbf{v}_i
+\end{align}\]</p>
+<p>To make the calculation simpler, we can create three input matrices by stacking our vector inputs:</p>
+<p>\[\begin{align}
+Q &amp;\in \mathbb{R}^{n \times d_\text{k}} \\\<br>
+K &amp;\in \mathbb{R}^{n \times d_\text{k}} \\\<br>
+V &amp;\in \mathbb{R}^{n \times d_\text{v}}
+\end{align}\]</p>
+<p>This allows us to write the basic equation of attention as:
+\[\text{Attention}(K, Q, V) = \text{softmax} \left( \frac{Q K^T}{\sqrt{d_k}}  \right) V \]</p>
+<p>Or, in PyTorch, as:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> torch.nn.functional <span style="color:#f92672">as</span> F
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">attn</span>(Q, K, V):
+    a <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>softmax((Q <span style="color:#960050;background-color:#1e0010">@</span> K<span style="color:#f92672">.</span>t()) <span style="color:#f92672">/</span> Q<span style="color:#f92672">.</span>shape[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+    <span style="color:#66d9ef">return</span> a <span style="color:#960050;background-color:#1e0010">@</span> V
+</code></pre></div><h5 id="what-does-this-mean">What does this mean?</h5>
+<p>Lets think back to our original sequence of embeddings, \(\textbf{x}\). We can choose that \(Q\), \(K\), and \(V\) are all equal to \(\textbf{x}\). In the paper, this is called &ldquo;Encoder self-attention&rdquo; (one of three ways attention is used). Lets say our input tokens are &ldquo;The man walked the dog&rdquo;. To compute the new vectors for each word, we take the projection of each words embedding onto each of the other embeddings (scaled by \(\sqrt{d_k}\) ), normalize these projections so they sum to \(1\), and then sum all of the words embeddings multiplied with the corresponding weight. Thus we get a vector who&rsquo;s magnitude can&rsquo;t grow, and that is a linear combination of all of input embeddings. Interestingly, this means the &ldquo;new&rdquo; vector for a word, \(z_{i}\), will give more weight in the sum to the embeddings, \(x_{j}\), that were similar to its own. To make this a bit more explicit, let&rsquo;s imagine our embeddings \(\textbf{x}\) correspond to the sentence &ldquo;the man walked the dog&rdquo;. We want to compute a new vector the first word, &ldquo;the&rdquo;. To do so, we compute the similarity between &ldquo;the&rdquo;&rsquo;s embedding vector, and the embedding vectors for &ldquo;the&rdquo;, &ldquo;man&rdquo;, &ldquo;walked&rdquo;, &ldquo;the&rdquo;, &ldquo;dog&rdquo;. These similarities are normalised so they sum to \(1\) (and the two &ldquo;the&rdquo; tokens will contribute the maximum similarity score, \(\frac{1}{\sqrt{d_k}}\) ). The new vector is therefore:</p>
+<p>\[\begin{align}
+z_{\text{the}} &amp;= \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;the&rdquo;}) \times \text{embedding}(\text{&ldquo;the&rdquo;}) \\\<br>
+&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;man&rdquo;}) \times \text{embedding}(\text{&ldquo;man&rdquo;}) \\\<br>
+&amp;+ \text{attention_weight}(\text{&ldquo;the&rdquo;}, \text{&ldquo;walked&rdquo;}) \times \text{embedding}(\text{&ldquo;walked&rdquo;}) \\\<br>
+&amp;+ \ldots
+\end{align}\]</p>
+<h4 id="multi-headed-attention">Multi-Headed Attention</h4>
+<p>The paper notes that &ldquo;additive attention&rdquo; performs better than the self attention described above, though it is much slower. Additive attention uses a more complicated compatibility function &ndash; namely a feed forward neural network. Naturally, this is slower than a highly optimized dot-product. Also naturally, it is more expressive. A single dot product can only give us the &ldquo;overall&rdquo; similarity between two vectors, while a feed forward layer can consider combinations of different subspaces.</p>
+<p>As a solution, multiple attention &ldquo;heads&rdquo; are used in parallel, each of which can focus on a different subspace. We parameterise the number of heads with \(h\).</p>
+<p>\[\begin{align}
+\text{Multihead}(Q, K, V) &amp;= \left( \overset{h}{\underset{i = 0}{\parallel}} \text{head}_i \right) W^{O} \\\<br>
+\text{head}_i &amp;= \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)
+\end{align}\]</p>
+<p>Where \(\parallel\) indicates the concatenation of vectors. Note that \(Q, K, V\) differ from the single headed version, and all are in \( \mathbb{R}^{n \times d_{\text{model}}}\).</p>
+<p>Compared to the version of attention discussed in previously, each attention head has three additional matrices, used to learn a linear projection of each of \(Q, K,\) and \(V\). Additionally, \(W^{O}\) is used to project the concatenated output of all heads into \(d_\text{model}\).</p>
+<p>\[\begin{align}
+W_{i}^Q &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{k}} \\\<br>
+W_{i}^K &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{k}} \\\<br>
+W_{i}^V &amp;\in \mathbb{R}^{d_\text{model} \times d_\text{v}} \\\<br>
+W^O &amp;\in \mathbb{R}^{ h d_\text{v} \times d_\text{model} }
+\end{align}\]</p>
+<p>A naive PyTorch implementation looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> math
+<span style="color:#f92672">import</span> torch
+<span style="color:#f92672">import</span> torch.nn.functional <span style="color:#f92672">as</span> F
+<span style="color:#f92672">from</span> torch <span style="color:#f92672">import</span> nn
+
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MultiHeadNaive</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self, d_model, d_k, d_v, h):
+        super()<span style="color:#f92672">.</span>__init__()
+
+        self<span style="color:#f92672">.</span>heads <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>ModuleList([AttnHead(d_model, d_k, d_v) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(h)])
+        self<span style="color:#f92672">.</span>Wo <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(h <span style="color:#f92672">*</span> d_v, d_model)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, Q, K, V):
+        head_results <span style="color:#f92672">=</span> [head(Q, K, V) <span style="color:#66d9ef">for</span> head <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>heads]
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>Wo(torch<span style="color:#f92672">.</span>cat(head_results, dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>))
+
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AttnHead</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self, d_model, d_k, d_v):
+        super()<span style="color:#f92672">.</span>__init__()
+
+        self<span style="color:#f92672">.</span>Wq <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_k)
+        self<span style="color:#f92672">.</span>Wk <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_k)
+        self<span style="color:#f92672">.</span>Wv <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_v)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, Q, K, V):
+        <span style="color:#66d9ef">return</span> attn(self<span style="color:#f92672">.</span>Wq(Q), self<span style="color:#f92672">.</span>Wk(K), self<span style="color:#f92672">.</span>Wv(V))
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">attn</span>(Q, K, V):
+    a <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>softmax((Q <span style="color:#960050;background-color:#1e0010">@</span> K<span style="color:#f92672">.</span>t()) <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(Q<span style="color:#f92672">.</span>shape[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]), dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+    <span style="color:#66d9ef">return</span> a <span style="color:#960050;background-color:#1e0010">@</span> V
+</code></pre></div><p>Most implementations are slightly more complicated for reasons of computational efficiency. It is possible to perform all of the \(W^{*}_{i}\) multiplications at one, by choosing a larger matrix:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> math
+
+<span style="color:#f92672">import</span> torch
+<span style="color:#f92672">import</span> torch.nn.functional <span style="color:#f92672">as</span> F
+<span style="color:#f92672">from</span> torch <span style="color:#f92672">import</span> nn
+
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MultiHead</span>(nn<span style="color:#f92672">.</span>Module):
+    <span style="color:#66d9ef">def</span> __init__(self, h, d_model):
+        super()<span style="color:#f92672">.</span>__init__()
+
+        <span style="color:#66d9ef">assert</span> d_model <span style="color:#f92672">%</span> h <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>, f<span style="color:#e6db74">&#34;d_model, {d_model} not divisible by number of heads, {h}&#34;</span>
+        self<span style="color:#f92672">.</span>d_model <span style="color:#f92672">=</span> d_model
+        self<span style="color:#f92672">.</span>d_k <span style="color:#f92672">=</span> d_model <span style="color:#f92672">//</span> h
+        self<span style="color:#f92672">.</span>h <span style="color:#f92672">=</span> h
+
+        <span style="color:#75715e"># These W^{*} linear layers contain _all_ W^{*}_{i} matices for each head.</span>
+        self<span style="color:#f92672">.</span>WQ <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_model)
+        self<span style="color:#f92672">.</span>WK <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_model)
+        self<span style="color:#f92672">.</span>WV <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_model)
+        self<span style="color:#f92672">.</span>WO <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, d_model)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, Q, K, V):
+        bs <span style="color:#f92672">=</span> Q<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]
+
+        n <span style="color:#f92672">=</span> Q<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]
+
+        <span style="color:#75715e"># (bs x n x d_model) -&gt; (bs x n x h x d_k) -&gt; (bs x h x n x d_k)</span>
+        Qs <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>WQ(Q)<span style="color:#f92672">.</span>view(bs, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>h, self<span style="color:#f92672">.</span>d_k)<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+        Ks <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>WK(K)<span style="color:#f92672">.</span>view(bs, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>h, self<span style="color:#f92672">.</span>d_k)<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+        Vs <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>WV(V)<span style="color:#f92672">.</span>view(bs, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>h, self<span style="color:#f92672">.</span>d_k)<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+
+        batched_attn <span style="color:#f92672">=</span> attn(Qs, Ks, Vs)
+
+        <span style="color:#75715e"># (bs x h x n x d_k) -&gt; (bs x n x h x d_k) -&gt; (bs x n x d_model)</span>
+        concatted_attn <span style="color:#f92672">=</span> batched_attn<span style="color:#f92672">.</span>transpose(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>contiguous()<span style="color:#f92672">.</span>view(bs, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>d_model)
+
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>WO(concatted_attn)
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">attn</span>(Q, K, V):
+    <span style="color:#75715e"># Q.matmul(K.transpose(-2, -1): (bs x h x n x d_k) x (bs x h x d_k x n) -&gt; (bs x h x n x n)</span>
+    a <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>softmax((Q<span style="color:#f92672">.</span>matmul(K<span style="color:#f92672">.</span>transpose(<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))) <span style="color:#f92672">/</span> math<span style="color:#f92672">.</span>sqrt(Q<span style="color:#f92672">.</span>shape[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]), dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+
+    <span style="color:#75715e"># a.matmul(V): (bs x h x n x n) x (bs x h x n x d_k) -&gt; (bs x h x n x d_k)</span>
+    <span style="color:#66d9ef">return</span> a<span style="color:#f92672">.</span>matmul(V)
+</code></pre></div><p>This implementation allows more operations to be parallelised, though is a bit more fiddly in terms of keeping track of dimensions. This is a simplified version of the implementation found <a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">here</a>.</p>
+<h3 id="notes">Notes</h3>
+<p>It is worth pointing out that neither of these versions of attention actually know about the positions of any of the inputs within a sequence &ndash; changing the order of the sequence would have no impact on the outcome. The full transformer model deals with this by adding &ldquo;positional embeddings&rdquo;. It is also worth point out that attention alone doesn&rsquo;t contain a non-linearity (though the \(\text{softmax}\) used to compute attention weights is non-linear, the weighted sum itself is a linear combination).</p>
+<p>An interesting way to think about attention is as an \(n \times n\) matrix. This could be interpreted as describing weighted edges in a graph, where each node is a token. Each attention head learns how to construct this graph for different inputs.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1761 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2019-04-24 11:59
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2021</span>
+            
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span><span><a href="https://liamatkinson.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+          </div>
+    </div>
 </footer>
 
-<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "liamatkinson-com" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            
+        </div>
 
-<ul id="post-list" class="archive readmore">
-    <h3>Read more</h3>
-
-    
-    
-    
-</ul>
+        
 
 
 
-        <footer id="footer">
-    
-        <div id="social">
+<script type="text/javascript" src="/bundle.min.2ce64ea6ea44a72b13dd812fc2eb5cca3efe878cce258a47c137c17edf46e0602a05e422b618a5b80b5939c731b7a293351c2f2222a21f6ee27e54a8448dd20e.js" integrity="sha512-LOZOpupEpysT3YEvwutcyj7&#43;h4zOJYpHwTfBft9G4GAqBeQithiluAtZOccxt6KTNRwvIiKiH27iflSoRI3SDg=="></script>
 
-	
-	
+
     
-    <a class="symbol" href="https://www.github.com/latkins">
-        circlegithub
-    </a>
-    
-    <a class="symbol" href="https://linkedin.com/in/liamatkinson/">
-        circlelinkedin
-    </a>
-    
-    <a class="symbol" href="https://www.twitter.com/latkins_">
-        circletwitterbird
-    </a>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     
 
 
-</div>
-
-    
-    <p class="small">
-    
-        © Copyright 2019 Liam Atkinson
-    
-    </p>
-</footer>
-
-    </section>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://liamatkinson.com/js/main.js"></script>
-<script src="https://liamatkinson.com/js/highlight.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-138491466-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-
-
-</body>
+    </body>
 </html>

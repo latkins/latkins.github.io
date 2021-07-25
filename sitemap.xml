@@ -1,37 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://liamatkinson.com/posts/attention-notes/</loc>
-    <lastmod>2019-04-24T10:59:18+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://liamatkinson.com/about/</loc>
-    <lastmod>2018-12-31T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://liamatkinson.com/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
   <url>
     <loc>https://liamatkinson.com/</loc>
     <lastmod>2019-04-24T10:59:18+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://liamatkinson.com/posts/attention-notes/</loc>
+    <lastmod>2019-04-24T10:59:18+01:00</lastmod>
+  </url><url>
     <loc>https://liamatkinson.com/posts/</loc>
     <lastmod>2019-04-24T10:59:18+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://liamatkinson.com/about/</loc>
+    <lastmod>2018-12-31T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://liamatkinson.com/blog/</loc>
+  </url><url>
+    <loc>https://liamatkinson.com/series/</loc>
+  </url><url>
     <loc>https://liamatkinson.com/tags/</loc>
-    <priority>0</priority>
   </url>
-  
 </urlset>
