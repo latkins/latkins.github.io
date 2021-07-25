@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MLOps on Liam Atkinson</title>
+    <link>https://liamatkinson.com/tags/mlops/</link>
+    <description>Recent content in MLOps on Liam Atkinson</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Sat, 24 Jul 2021 14:11:19 +0200</lastBuildDate><atom:link href="https://liamatkinson.com/tags/mlops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploying Machine Learning Models (is still terrible)</title>
+      <link>https://liamatkinson.com/posts/ml_deployment/</link>
+      <pubDate>Sat, 24 Jul 2021 14:11:19 +0200</pubDate>
+      
+      <guid>https://liamatkinson.com/posts/ml_deployment/</guid>
+      <description>Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard.</description>
+    </item>
+    
+  </channel>
+</rss>

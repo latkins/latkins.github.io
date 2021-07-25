@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard." />
+<meta name="keywords" content=", Machine Learning, MLOps, Deployment" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://liamatkinson.com/posts/ml_deployment/" />
+
+
+    <title>
+        
+            Deploying Machine Learning Models (is still terrible) :: Liam Atkinson  — Thoughts on Machine Learning
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.4d1cb919b6e63b1e9669424dd5832dffa1975fafd65be42370af247df64b18d5.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    
+
+
+
+
+
+
+<meta itemprop="name" content="Deploying Machine Learning Models (is still terrible)">
+<meta itemprop="description" content="Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard."><meta itemprop="datePublished" content="2021-07-24T14:11:19&#43;02:00" />
+<meta itemprop="dateModified" content="2021-07-24T14:11:19&#43;02:00" />
+<meta itemprop="wordCount" content="784"><meta itemprop="image" content="https://liamatkinson.com/"/>
+<meta itemprop="keywords" content="Machine Learning,MLOps,Deployment," />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://liamatkinson.com/"/>
+
+<meta name="twitter:title" content="Deploying Machine Learning Models (is still terrible)"/>
+<meta name="twitter:description" content="Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard."/>
+
+
+
+
+    <meta property="og:title" content="Deploying Machine Learning Models (is still terrible)" />
+<meta property="og:description" content="Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://liamatkinson.com/posts/ml_deployment/" /><meta property="og:image" content="https://liamatkinson.com/"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-24T14:11:19&#43;02:00" />
+<meta property="article:modified_time" content="2021-07-24T14:11:19&#43;02:00" /><meta property="og:site_name" content="Liam Atkinson" />
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2021-07-24 14:11:19 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        Home
+        
+            
+            
+            
+                  
+                   
+                   
+            
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about/">About</a></li><li><a href="/posts">Blog</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://liamatkinson.com/posts/ml_deployment/">Deploying Machine Learning Models (is still terrible)</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <p>Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.</p>
+<p>Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard. Why?</p>
+<h4 id="moving-parts">More Moving Parts</h4>
+<p>Model weights need to match the architecture. Multiple sets of weights can be produced from a single dataset and single architecture. In reality, neither the dataset nor the model architecture are likely to be static. There may be a feedback loop between the model&rsquo;s usage, and data it is trained on. Models often involve a number of preprocessing steps. This, as well as the model itself, are likely being worked on in real-time.</p>
+<h4 id="performance-monitoring--distribution-shift">Performance Monitoring / Distribution Shift</h4>
+<p>Related to <a href="#moving-parts">the above</a>, a model being &ldquo;deployed&rdquo; is not the end of the story. In addition to the logging and monitoring needed for traditional backend services, the distribution of input data needs to be monitored. Model performance might decrease (or increase) as the inputs change. This might mean continually annotating a subset of new data, or continually retraining. If retraining is common, a test-set of carefully selected examples might be employed, to ensure the model doesn&rsquo;t accidentally regress.</p>
+<h4 id="computationally-expensive">Computationally Expensive</h4>
+<p>Software goes faster by doing less (for a given bit of hardware). ML models do a lot. This means they are slower (and usually require more memory) than normal backend services. Increasing the hardware budget can get around some of these problems (and might enable the use of things like GPUs<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>).</p>
+<p>Depending on the application, there may be hard requirements. Perhaps running on a mobile phone, and/or processing a certain number of images per second. Requirements such as these may prohibit many types of model.</p>
+<p>None of this is different from non-ML software, but higher computational cost makes these problems harder.</p>
+<h4 id="confluence-of-skills">Confluence of Skills</h4>
+<p>I mentioned that backend services are created and deployed all the time. This is true, but that doesn&rsquo;t mean doing so is trivial. Engineers can follow best practices developed over many years, and use battle tested technology. DevOps expertise is highly valued, and a key part of deployment. The components required to deploy a system are relatively well understood, and a team is likely to have years of experience using them.</p>
+<p>Deploying ML services requires the same knowledge &ndash; as well as an understanding of the model. In spite of this, ML/Data Science teams are often separate from &ldquo;traditional&rdquo; engineering teams. A model might be handed off to a different set of engineers for deployment, or the ML team may be asked to do so themselves<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. In either case, the team doing the work does not poses all of the required knowledge. Even worse, those missing skills will have to be learned without the help of experience team members.</p>
+<p>For products completely enabled by ML, a very wide range of skills might need to be employed. Model design and training, low level optimisation of c++ or cuda kernels, higher level system architecture that works with model limitations, DevOps, and so on. Building teams that know enough about all of these areas is not trivial.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Machine Learning is probably somewhere around the Trough of Disillusionment on the <a href="https://en.wikipedia.org/wiki/Hype_cycle">Gartner Hype Cycle</a> (though perhaps others feel it is still over hyped). One of the missing pieces needed to build (useful) ML products is knowledge around deployment. This gap is currently being filled. ML Engineering roles are becoming more common, and communities like <a href="https://mlops.community/">MLOps</a> are very active. There are also an increasing number of tools that try to solve various parts of the deployment process &ndash; <a href="https://www.kubeflow.org/">KubeFlow</a>, <a href="https://mlflow.org/">MLFlow</a>, <a href="https://metaflow.org/">MetaFlow</a>, <a href="https://aws.amazon.com/sagemaker/">SageMaker</a>, <a href="https://wandb.ai/site">Weights &amp; Biases</a>, and (very) many more. Of course, understanding the strengths and limitations of each of these tools is a lot of work.</p>
+<p>I am thinking of writing a series of code-first blog posts on different topics related to deployment. While there are more than enough resources to be found about training any kind of model, there are far fewer high quality resources related to the practical considerations of deployment. And fundamentally, if you don&rsquo;t deploy a model after all the hard work it takes to train it, what was the point?</p>
+<p>If there is anything you would like to see covered (or you are looking for advice), feel free to get in touch <a href="https://twitter.com/latkins_">@latkins_</a> on twitter.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Unfortunately, you now need to deal with CUDA. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Fortunately, Data Scientists who are &ldquo;too good&rdquo; to code are nothing like as common as they were 5 years ago. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://liamatkinson.com/tags/machine-learning/">Machine Learning</a></span>
+        <span class="tag"><a href="https://liamatkinson.com/tags/mlops/">MLOps</a></span>
+        <span class="tag"><a href="https://liamatkinson.com/tags/deployment/">Deployment</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        784 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2021-07-24 14:11
+        
+
+         
+          
+        
+      </p>
+    </div>
+
+    
+
+
+    
+
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2021</span>
+            
+            <span><a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></span><span><a href="https://liamatkinson.com/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+          </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.2ce64ea6ea44a72b13dd812fc2eb5cca3efe878cce258a47c137c17edf46e0602a05e422b618a5b80b5939c731b7a293351c2f2222a21f6ee27e54a8448dd20e.js" integrity="sha512-LOZOpupEpysT3YEvwutcyj7&#43;h4zOJYpHwTfBft9G4GAqBeQithiluAtZOccxt6KTNRwvIiKiH27iflSoRI3SDg=="></script>
+
+
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+
+    </body>
+</html>

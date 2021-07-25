@@ -6,8 +6,48 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 24 Apr 2019 10:59:18 +0100</lastBuildDate>
+        <lastBuildDate>Sat, 24 Jul 2021 14:11:19 +0200</lastBuildDate>
         <atom:link href="https://liamatkinson.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Deploying Machine Learning Models (is still terrible)</title>
+            <link>https://liamatkinson.com/posts/ml_deployment/</link>
+            <pubDate>Sat, 24 Jul 2021 14:11:19 +0200</pubDate>
+            
+            <guid>https://liamatkinson.com/posts/ml_deployment/</guid>
+            <description>Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.
+Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard.</description>
+            <content type="html"><![CDATA[<p>Designing, building, and training models are hard problems. Literature is reviewed, data is gathered (and cleaned and annotated). Hours (or perhaps days? weeks?) are spent getting code to work, fixing subtle bugs, tuning training schemes. Finally, the metrics look good. It is time to deploy. And a new world of pain is entered.</p>
+<p>Backend services are created and deployed all the time. Doing so with an ML system is often frustratingly hard. Why?</p>
+<h4 id="moving-parts">More Moving Parts</h4>
+<p>Model weights need to match the architecture. Multiple sets of weights can be produced from a single dataset and single architecture. In reality, neither the dataset nor the model architecture are likely to be static. There may be a feedback loop between the model&rsquo;s usage, and data it is trained on. Models often involve a number of preprocessing steps. This, as well as the model itself, are likely being worked on in real-time.</p>
+<h4 id="performance-monitoring--distribution-shift">Performance Monitoring / Distribution Shift</h4>
+<p>Related to <a href="#moving-parts">the above</a>, a model being &ldquo;deployed&rdquo; is not the end of the story. In addition to the logging and monitoring needed for traditional backend services, the distribution of input data needs to be monitored. Model performance might decrease (or increase) as the inputs change. This might mean continually annotating a subset of new data, or continually retraining. If retraining is common, a test-set of carefully selected examples might be employed, to ensure the model doesn&rsquo;t accidentally regress.</p>
+<h4 id="computationally-expensive">Computationally Expensive</h4>
+<p>Software goes faster by doing less (for a given bit of hardware). ML models do a lot. This means they are slower (and usually require more memory) than normal backend services. Increasing the hardware budget can get around some of these problems (and might enable the use of things like GPUs<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>).</p>
+<p>Depending on the application, there may be hard requirements. Perhaps running on a mobile phone, and/or processing a certain number of images per second. Requirements such as these may prohibit many types of model.</p>
+<p>None of this is different from non-ML software, but higher computational cost makes these problems harder.</p>
+<h4 id="confluence-of-skills">Confluence of Skills</h4>
+<p>I mentioned that backend services are created and deployed all the time. This is true, but that doesn&rsquo;t mean doing so is trivial. Engineers can follow best practices developed over many years, and use battle tested technology. DevOps expertise is highly valued, and a key part of deployment. The components required to deploy a system are relatively well understood, and a team is likely to have years of experience using them.</p>
+<p>Deploying ML services requires the same knowledge &ndash; as well as an understanding of the model. In spite of this, ML/Data Science teams are often separate from &ldquo;traditional&rdquo; engineering teams. A model might be handed off to a different set of engineers for deployment, or the ML team may be asked to do so themselves<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>. In either case, the team doing the work does not poses all of the required knowledge. Even worse, those missing skills will have to be learned without the help of experience team members.</p>
+<p>For products completely enabled by ML, a very wide range of skills might need to be employed. Model design and training, low level optimisation of c++ or cuda kernels, higher level system architecture that works with model limitations, DevOps, and so on. Building teams that know enough about all of these areas is not trivial.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Machine Learning is probably somewhere around the Trough of Disillusionment on the <a href="https://en.wikipedia.org/wiki/Hype_cycle">Gartner Hype Cycle</a> (though perhaps others feel it is still over hyped). One of the missing pieces needed to build (useful) ML products is knowledge around deployment. This gap is currently being filled. ML Engineering roles are becoming more common, and communities like <a href="https://mlops.community/">MLOps</a> are very active. There are also an increasing number of tools that try to solve various parts of the deployment process &ndash; <a href="https://www.kubeflow.org/">KubeFlow</a>, <a href="https://mlflow.org/">MLFlow</a>, <a href="https://metaflow.org/">MetaFlow</a>, <a href="https://aws.amazon.com/sagemaker/">SageMaker</a>, <a href="https://wandb.ai/site">Weights &amp; Biases</a>, and (very) many more. Of course, understanding the strengths and limitations of each of these tools is a lot of work.</p>
+<p>I am thinking of writing a series of code-first blog posts on different topics related to deployment. While there are more than enough resources to be found about training any kind of model, there are far fewer high quality resources related to the practical considerations of deployment. And fundamentally, if you don&rsquo;t deploy a model after all the hard work it takes to train it, what was the point?</p>
+<p>If there is anything you would like to see covered (or you are looking for advice), feel free to get in touch <a href="https://twitter.com/latkins_">@latkins_</a> on twitter.</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>Unfortunately, you now need to deal with CUDA. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>Fortunately, Data Scientists who are &ldquo;too good&rdquo; to code are nothing like as common as they were 5 years ago. <a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+]]></content>
+        </item>
         
         <item>
             <title>Notes on Attention</title>
